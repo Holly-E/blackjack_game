@@ -49,13 +49,16 @@ class Card:
 # define hand class
 class Hand:
     def __init__(self):
-        pass	# create Hand object
+        self.hand = []
 
     def __str__(self):
-        pass	# return a string representation of a hand
+        contains = "Hand contains "
+        for card in self.hand:
+            contains += str(card) + " "
+        return contains
 
     def add_card(self, card):
-        pass	# add a card object to a hand
+        self.hand.append(card)
 
     def get_value(self):
         # count aces as 1, if the hand has an ace, then add 10 to hand value if it doesn't bust
@@ -68,18 +71,25 @@ class Hand:
 # define deck class
 class Deck:
     def __init__(self):
-        pass	# create a Deck object
+        self.deck = []
+        for s in SUITS:
+            for r in RANKS:
+                self.deck.append(Card(s, r))
 
     def shuffle(self):
         # shuffle the deck
-        pass    # use random.shuffle()
+        random.shuffle(self.deck)
 
     def deal_card(self):
-        pass	# deal a card object from the deck
+        # deal a card object from the deck
+        return self.deck.pop(-1)
 
     def __str__(self):
-        pass	# return a string representing the deck
-
+        # return a string representing the deck
+        contains = "Deck contains "
+        for card in self.deck:
+            contains += str(card) + " "
+        return contains
 
 
 #define event handlers for buttons
