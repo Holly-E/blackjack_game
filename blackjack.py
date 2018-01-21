@@ -82,7 +82,7 @@ class Hand:
     def draw(self, canvas, pos):
         # draw a hand on the canvas, use the draw method for cards
         for card in self.hand:
-            card.draw(canvas, (pos[0] + self.hand.index(card) * (CARD_SIZE2[0] + 20), pos[1]))
+            card.draw(canvas, (pos[0] + self.hand.index(card) * (CARD_SIZE2[0] + 10), pos[1]))
 
 # define deck class
 class Deck:
@@ -110,7 +110,12 @@ class Deck:
 
 #define event handlers for buttons
 def deal():
-    global outcome1, outcome2, in_play, current_deck, player_hand, dealer_hand
+    global outcome1, outcome2, score, in_play, current_deck, player_hand, dealer_hand
+    if in_play:
+        outcome2 = "Dealing mid-round cost a point"
+        score -= 1
+    else:
+        outcome2 = ""
     current_deck = Deck()
     current_deck.shuffle()
     player_hand = Hand()
@@ -120,7 +125,6 @@ def deal():
         dealer_hand.add_card(current_deck.deal_card())
     in_play = True
     outcome1 = "Hit or stand?"
-    outcome2 = ""
 
 def hit():
     global outcome1, outcome2, in_play, score, player_hand, current_deck
@@ -147,7 +151,7 @@ def stand():
             dealer_hand.add_card(current_deck.deal_card())
     # assign a message to outcome, update in_play and score
         if dealer_hand.get_value() > 21:
-            outcome2 = "Dealer busted, you win this round!"
+            outcome2 = "Dealer busted, you won this round!"
             outcome1 = "New deal?"
             score += 1
         elif dealer_hand.get_value() > player_hand.get_value():
@@ -166,14 +170,18 @@ def stand():
 
 # draw handler
 def draw(canvas):
-    dealer_hand.draw(canvas, [100, 200])
-    player_hand.draw(canvas, [100, 400])
+    dealer_hand.draw(canvas, [40, 200])
+    player_hand.draw(canvas, [40, 400])
     canvas.draw_text("Blackjack", (275, 100), 30, '#ffcc00', 'sans-serif')
     canvas.draw_text("Score = " + str(score), (420, 40), 25, 'white', 'monospace')
-    canvas.draw_text("Dealer", (100, 175), 25, 'black', 'sans-serif')
-    canvas.draw_text("Player", (100, 375), 25, 'black', 'sans-serif')
-    canvas.draw_text(outcome1, (275, 375), 25, 'black', 'sans-serif')
-    canvas.draw_text(outcome2, (275, 175), 25, 'black', 'sans-serif')
+    canvas.draw_text("Dealer", (40, 175), 22, 'black', 'sans-serif')
+    canvas.draw_text("Player", (40, 375), 22, 'black', 'sans-serif')
+    canvas.draw_text(outcome1, (215, 375), 22, 'black', 'sans-serif')
+    canvas.draw_text(outcome2, (215, 175), 22, 'black', 'sans-serif')
+
+    if in_play:
+        # x coordinate is dealer_hand.draw pos[0] + cardsize + cardcenter + 10px margin
+        canvas.draw_image(card_back, (CARD_BACK_CENTER[0], CARD_BACK_CENTER[1]), CARD_BACK_SIZE, [50 + CARD_SIZE2[0] + CARD_CENTER2[0], 200 + CARD_CENTER2[1]], CARD_SIZE2)
 
     # initialization frame
 frame = simplegui.create_frame("Blackjack", 600, 600)
