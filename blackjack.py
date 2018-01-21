@@ -12,7 +12,7 @@ card_back = simplegui.load_image("http://storage.googleapis.com/codeskulptor-ass
 
 # initialize some useful global variables
 in_play = False
-outcome = ""
+outcome = "Test"
 score = 0
 current_deck = ""
 player_hand = ""
@@ -76,7 +76,6 @@ class Hand:
             self.value += 10
         return self.value
 
-
     def draw(self, canvas, pos):
         pass	# draw a hand on the canvas, use the draw method for cards
 
@@ -117,20 +116,43 @@ def deal():
         dealer_hand.add_card(current_deck.deal_card())
     print "Player " + str(player_hand) + "Dealer " + str(dealer_hand)
     in_play = True
+    outcome = "Hit or stand?"
 
 def hit():
-    pass	# replace with your code below
-
+    global outcome, in_play, score, player_hand, current_deck
     # if the hand is in play, hit the player
+    if in_play:
+        if player_hand.get_value() <= 21:
+            player_hand.add_card(current_deck.deal_card())
 
     # if busted, assign a message to outcome, update in_play and score
+    if player_hand.get_value() > 21:
+        outcome = "You have busted! New deal?"
+        in_play = False
+        score -= 1
 
 def stand():
-    pass	# replace with your code below
-
+    global outcome, in_play, score, player_hand, dealer_hand
     # if hand is in play, repeatedly hit dealer until his hand has value 17 or more
-
+    if player_hand.get_value() > 21:
+        outcome = "Can't stand, you already busted! New deal?"
+    elif in_play:
+        while dealer_hand.get_value() < 17:
+            dealer_hand.add_card(current_deck.deal_card())
     # assign a message to outcome, update in_play and score
+        if dealer_hand.get_value() > 21:
+            outcome = "Dealer busted, you win this round! New deal?"
+            score += 1
+        elif dealer_hand.get_value() > player_hand.get_value():
+            outcome = "Dealer won this round. New deal?"
+            score -= 1
+        elif dealer_hand.get_value() == player_hand.get_value():
+            outcome = "Dealer wins tie. New deal?"
+            score -= 1
+        else:
+            outcome = "You won this round! New deal?"
+            score += 1
+        in_play = False
 
 # draw handler
 def draw(canvas):
@@ -138,6 +160,8 @@ def draw(canvas):
 
     card = Card("S", "A")
     card.draw(canvas, [300, 300])
+
+    canvas.draw_text(outcome, (20, 20), 20, 'white')
 
 
 # initialization frame
