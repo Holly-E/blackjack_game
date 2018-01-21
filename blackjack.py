@@ -1,3 +1,5 @@
+# Mini-game - Blackjack
+
 import simplegui
 import random
 
@@ -135,7 +137,7 @@ def hit():
 
     # if busted, assign a message to outcome, update in_play and score
             if player_hand.get_value() > 21:
-                outcome2 = "You have busted!"
+                outcome2 = "You have busted! Dealer won."
                 outcome1 = "New deal?"
                 in_play = False
                 score -= 1
@@ -168,11 +170,17 @@ def stand():
             score += 1
         in_play = False
 
+def new():
+    global outcome1, outcome2, in_play, score, player_hand, dealer_hand
+    deal()
+    score = 0
+    outcome2 = 'New Game'
+
 # draw handler
 def draw(canvas):
     dealer_hand.draw(canvas, [40, 200])
     player_hand.draw(canvas, [40, 400])
-    canvas.draw_text("Blackjack", (275, 100), 30, '#ffcc00', 'sans-serif')
+    canvas.draw_text("BLACKJACK", (220, 100), 30, '#ffcc00')
     canvas.draw_text("Score = " + str(score), (420, 40), 25, 'white', 'monospace')
     canvas.draw_text("Dealer", (40, 175), 22, 'black', 'sans-serif')
     canvas.draw_text("Player", (40, 375), 22, 'black', 'sans-serif')
@@ -191,6 +199,7 @@ frame.set_canvas_background("Green")
 frame.add_button("Deal", deal, 200)
 frame.add_button("Hit",  hit, 200)
 frame.add_button("Stand", stand, 200)
+frame.add_button("New Game", new, 200)
 frame.set_draw_handler(draw)
 
 
