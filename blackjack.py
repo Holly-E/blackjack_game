@@ -65,6 +65,16 @@ class Hand:
 
     def get_value(self):
         # count aces as 1, if the hand has an ace, then add 10 to hand value if it doesn't bust
+        self.value = 0
+        aces = False
+        for card in self.hand:
+            rank = card.get_rank()
+            if rank == 'A':
+                aces = True
+            self.value += VALUES[rank]
+        if aces and (self.value + 10 <= 21):
+            self.value += 10
+        return self.value
 
 
     def draw(self, canvas, pos):
